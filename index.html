@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Mein Steckbrief</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            /* Grundfarben */
+            --primary: #001f3f;      /* Dunkelblau */
+            --primary-dark: #00132a;
+            --accent: #1f5b2f;       /* Waldgrün */
+            --bg-page: #f2f2f5;      /* helles Grau */
+            --bg-card: #ffffff;
+            --text-main: #222222;
+            --text-muted: #555555;
+            --border-soft: rgba(0,0,0,0.06);
+        }
+
+        /* Dark Mode: Variablen überschreiben */
+        body.dark-mode {
+            --bg-page: #0b1220;
+            --bg-card: #111827;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-soft: rgba(255,255,255,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Aptos", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            font-size: 22px;          /* Grundgröße */
+            /* Überschriften */
+h1 {
+    font-size: 2rem;
+}
+
+.card h2 {
+    font-size: 1.9rem;
+}
+
+.timeline-content h3,
+.slide h3 {
+    font-size: 1.1rem;
+}
+
+/* Fließtext in Karten */
+.card p,
+.card li {
+    font-size: 1,5rem;
+}
+
+/* Sidebar (falls du sie später wieder nutzt) */
+.sidebar-card p,
+.sidebar-card li {
+    font-size: 0.95rem;
+}
+
+/* Kleine Elemente */
+.mode-toggle-label,
+#slideCounter,
+#hobbyCounter,
+footer {
+    font-size: 0.9rem;
+}
+        }
+
+        /* HEADER – immer dunkelblau */
+        header {
+            background: #001f3f;
+            color: #fff;
+            padding: 20px 6%;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+            display: block;
+        }
+
+        .title-area h1 {
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .mode-toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-toggle-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #cbd5f5;
+        }
+
+        /* Dark-Mode-Button */
+        #modeToggle {
+            background: #ffffff;
+            color: #001f3f;
+            border: 1px solid rgba(0,0,0,0.2);
+            padding: 6px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        #modeToggle:hover {
+            background: #e5e7eb;
+        }
+
+        body.dark-mode #modeToggle {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-color: #4b5563;
+        }
+
+        body.dark-mode #modeToggle:hover {
+            background: #111827;
+        }
+
+        @media (max-width: 600px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        main {
+    padding: 30px 4%;
+    max-width: 1400px;   /* größer */
+    margin: 0 auto;
+}
+
+        }
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 1fr); /* Hauptkacheln ~80%, Sidebar ~20% */
+    gap: 24px;
+}
+
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                margin-top: 20px;
+            }
+        }
+
+        .content { }
+
+        .sidebar {
+            /* aktuell leer – du kannst später Inhalte ergänzen oder die Sidebar entfernen */
+        }
+
+        .intro {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 25px;
+            align-items: stretch;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .intro {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* KARTEN */
+        .card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-soft);
+        }
+
+.contact-card {
+    background: linear-gradient(135deg, #e0f2e9, #c4e4d2);        /* dunkler Blau-Verlauf */
+    border-color: #1f5b2f;     /* waldgrüner Rand */
+}
+
+body.dark-mode .contact-card {
+    background: linear-gradient(135deg, #022c22, #064e3b);  /* dunkler Grün-Verlauf */
+    border-color: #10b981;
+}
+
+
+        .card h2 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 6px;
+        }
+
+        body.dark-mode .card h2 {
+            border-bottom-color: rgba(255,255,255,0.08);
+        }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 5px; }
+
+        /* Profilbild-Karte */
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 12px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .profile-caption {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 18px 6%;
+            background: #00132a;
+            color: var(--text-muted);
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Abteilungs-Slides */
+        .slide { display: none; }
+        .slide.active { display: block; }
+
+        .slideshow-controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .slideshow-controls button {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .slideshow-controls button:hover {
+            background: #184324;
+        }
+
+        #slideCounter,
+        #hobbyCounter {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .next-arrow {
+            background: #1f5b2f;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
+        .next-arrow:hover {
+            background: #184324;
+        }
+
+        /* Hobby-Slideshow */
+        .hobby-slideshow {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .hobby-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .hobby-slide.active {
+            opacity: 1;
+        }
+
+        /* Zeitstrahl Ausbildung */
+        .timeline {
+            position: relative;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .timeline {
+            border-left-color: rgba(255,255,255,0.15);
+        }
+
+        .timeline-step {
+            position: relative;
+            padding: 10px 0 10px 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -7px;
+            top: 16px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #9ca3af;
+        }
+
+        .timeline-step.completed .timeline-dot {
+            background: #1f5b2f;
+        }
+
+        .timeline-step.current .timeline-dot {
+            background: #facc15;
+        }
+
+        .timeline-content h3 {
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .timeline-content p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Zurück nach oben Button */
+        #backToTop {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #1f5b2f;
+            color: #ffffff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+            display: none;
+            z-index: 1000;
+        }
+
+        #backToTop:hover {
+            background: #184324;
+        }
+
+        body.dark-mode #backToTop {
+            background: #10b981;
+            color: #0b1220;
+        }
+
+        /* Zwei-Kachel-Reihe (Abteilungen + Projekte) */
+        .two-column-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .two-column-row .card {
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .two-column-row {
+                grid-template-columns: 1fr;
+            }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="logo-area">
+            <img src="BR_230410_ws_rgb.png" alt="Mein Logo" class="logo-img">
+            <div class="title-area">
+                <h1>Mein Steckbrief</h1>
+            </div>
+        </div>
+
+        <div class="mode-toggle-wrapper">
+            <span class="mode-toggle-label">Ansicht:</span>
+            <button id="modeToggle" type="button">Dark Mode</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="layout">
+        <!-- Hauptbereich mit Kacheln -->
+        <div class="content">
+
+            <!-- Einleitung + Foto -->
+            <section class="intro">
+                <div class="card">
+                    <h2>Wer ich bin?</h2>
+                    <p>
+                        Servus, ich bin Linda, 20 Jahre alt und mache seit 2 Jahren eine Ausbildung zur Kauffrau für Büromanagement.
+                        Ich bin ein offener, kommunikativer und fröhlicher Mensch, der immer für einen Spaß zu haben ist ☺️.
+                    </p>
+                </div>
+
+                <div class="card profile-card">
+                    <img src="IMG_2191.jpg" alt="Foto von mir" class="avatar-img">
+                    <p class="profile-caption">
+                        <!-- Optional: kurzer Satz über dich -->
+                    </p>
+                </div>
+            </section>
+
+            <!-- Persönliche Eigenschaften (optional füllen) -->
+            <section class="card">
+                <h2>Emojis, die mich am Besten beschreiben:</h2>
+                <p>
+                    ☺️☀️😃😎🤪
+                </p>
+            </section>
+
+            <!-- Hobbys und Interessen -->
+            <section class="card">
+                <h2>Meine Interessen & Hobbys</h2>
+                <ul>
+                    <li>Fußball ⚽ – spielt eine sehr große Rolle in meinem Leben</li>
+                    <li>Bonnie 🐶</li>
+                    <li>Ski und Gravel Bike fahren, laufen gehen, Paddle, mit Freunden was unternehmen</li>
+                </ul>
+            </section>
+
+            <!-- Hobby-Slideshow -->
+            <section class="card">
+                <h2>Meine Hobbys in Bildern</h2>
+
+                <div class="hobby-slideshow">
+                    <img src="IMG_6749.jpg" class="hobby-slide active" alt="Hobby 1">
+                    <img src="IMG_3951.jpg" class="hobby-slide" alt="Hobby 2">
+                    <img src="IMG_1009.jpg" class="hobby-slide" alt="Hobby 3">
+                    <img src="Flieger.jpg" class="hobby-slide" alt="Hobby 4">
+    <img src="Laufen mit Bonnie.jpg" class="hobby-slide" alt="Hobby 5">
+    <img src="TheWeeknd Konzert.jpg" class="hobby-slide" alt="Hobby 6">
+    <img src="Stadion mit Doro.jpg" class="hobby-slide" alt="Hobby 7">
+    <img src="Rad mit Lukas.jpg" class="hobby-slide" alt="Hobby 8">
+    <img src="Bob.jpg" class="hobby-slide" alt="Hobby 9">
+    <img src="Skifahren mit Doro.jpg" class="hobby-slide" alt="Hobby 10">
+                </div>
+
+                <div class="slideshow-controls">
+                    <button type="button" id="hobbyPrev">←</button>
+                    <span id="hobbyCounter"></span>
+                    <button type="button" id="hobbyNext">→</button>
+                </div>
+            </section>
+
+            <!-- Meine Abteilungen + Projekte nebeneinander -->
+            <section class="two-column-row">
+                <!-- Linke Kachel: Abteilungen -->
+                <div class="card">
+                    <h2>Meine Abteilungen</h2>
+
+                    <div id="slideshow" style="position:relative;">
+                        <div class="slide active">
+                            <h3>Immobilien</h3>
+                            <p>Immobilien, oder früher auch Bau und Liegenschaften, war meine allererste Station, sozusagen mein Start beim BR.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Learning & Development</h3>
+                            <p>Kurze Beschreibung dieser Abteilung und was du dort gemacht hast.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Büro der Gleichstellungsbeauftragten</h3>
+                            <p>Unterstützung bei der Organisation für den Zukunftstag.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Zentralbereich Planung & Koordination (PDI)</h3>
+                            <p>In dieser Abteilung habe ich sehr viel über mich gelernt. Diese Station war mit die wichtigste in meiner Ausbildungsbahn.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>BR 24</h3>
+                            <p>Ich durfte an der Hörfunkwoche bei Adele teilnehmen und habe meinen eigenen Mini-Podcast erstellt.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Programmbereich Bayern 2</h3>
+                            <p>Hier war meine Hauptaufgabe die Mithilfe bei der Organisation für das Event "#BayernSingt".</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Zentrales Marketing</h3>
+                            <p>Meine Lieblingsstation. Ich war zuständig für Planung und Koordination der didacta in Köln.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Rechnungswesen</h3>
+                            <p>Nicht so meins – aber gehört zur Ausbildung dazu.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Haushalt und Betriebswirtschaft</h3>
+                            <p>Hier hat es mir aufgrund des Teams wieder sehr gut gefallen. Aufgaben waren relativ trocken.</p>
+                        </div>
+                        <div class="slide">
+                            <h3>Verbreitungsstrategie und Regulierung</h3>
+                            <p>Kurzer Einsatz, aber ein guter Abschluss aus dem Funkhaus.</p>
+                        </div>
+
+                        <div class="slideshow-controls">
+                            <span id="slideCounter"></span>
+                            <button type="button" id="nextBtn" class="next-arrow" aria-label="Nächste Abteilung">➤</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rechte Kachel: Projekte mit Audio -->
+                <div class="card">
+                    <h2>Projekte aus meiner Ausbildung</h2>
+
+                    <p>Hier könnt ihr einen kleinen Einblick in eines meiner Projekte hören:</p>
+
+                    <audio controls style="width:100%; margin-top:10px;">
+                        <source src="01_Lindas Leben.mp3" type="audio/mpeg">
+                    </audio>
+
+                    <ul style="margin-top:10px;">
+                        <li>Mini-Podcast</li>
+                      
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Meine Ausbildung mit Zeitstrahl -->
+            <section class="card">
+                <h2>Meine Ausbildung</h2>
+
+                <div class="timeline">
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Start beim BR</h3>
+                            <p>Beginn der Ausbildung zur Kauffrau für Büromanagement.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Zwischenstationen</h3>
+                            <p> PDI, Marketing, Bayern 2 und weitere Abteilungen.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step current">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Aktueller Stand</h3>
+                            <p>ca. 85% meiner Ausbildung sind geschafft 🤩</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Abschluss</h3>
+                            <p>Voraussichtlich im Februar</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Werdegang -->
+            <section class="card">
+                <h2>Mein Werdegang</h2>
+                <p>Realschule, FOS, Ausbildung beim BR</p>
+            </section>
+
+          <section class="card contact-card">
+    <h2>Kontakt</h2>
+    <p>So bin ich erreichbar:</p>
+    <p>
+        E-Mail: <strong>linda.penski@br.de</strong><br>
+        Nummer: +49 89 590023508
+    </p>
+</section>
+
+        </div>
+
+        <!-- Sidebar rechts aktuell leer -->
+        <aside class="sidebar">
+           Hier könnte noch eine Video - Datei hinterlegt sein, bspw. ein Erklärvideo.
+        </aside>
+    </div>
+
+    <!-- Zurück nach oben -->
+    <button id="backToTop" aria-label="Zurück nach oben">↑</button>
+</main>
+
+<footer>
+    &copy; <span id="jahr"></span> Bis bald 👋🏻
+</footer>
+
+<script>
+    document.getElementById('jahr').textContent = new Date().getFullYear();
+</script>
+
+<!-- Abteilungs-Slideshow -->
+<script>
+    const slides = document.querySelectorAll('#slideshow .slide');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('slideCounter');
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
+        counter.textContent = (index + 1) + ' / ' + slides.length;
+    }
+
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        showSlide(currentIndex);
+    });
+
+    showSlide(currentIndex);
+</script>
+
+<!-- Hobby-Slideshow -->
+<script>
+    const hobbySlides = document.querySelectorAll('.hobby-slide');
+    const hobbyPrev = document.getElementById('hobbyPrev');
+    const hobbyNext = document.getElementById('hobbyNext');
+    const hobbyCounter = document.getElementById('hobbyCounter');
+
+    let hobbyCurrent = 0;
+
+    function showHobbySlide(index) {
+        hobbySlides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
+        if (hobbyCounter) {
+            hobbyCounter.textContent = (index + 1) + ' / ' + hobbySlides.length;
+        }
+    }
+
+    function nextHobby() {
+        hobbyCurrent = (hobbyCurrent + 1) % hobbySlides.length;
+        showHobbySlide(hobbyCurrent);
+    }
+
+    function prevHobby() {
+        hobbyCurrent = (hobbyCurrent - 1 + hobbySlides.length) % hobbySlides.length;
+        showHobbySlide(hobbyCurrent);
+    }
+
+    let hobbyTimer = setInterval(nextHobby, 3000);
+
+    function resetHobbyTimer() {
+        clearInterval(hobbyTimer);
+        hobbyTimer = setInterval(nextHobby, 3000);
+    }
+
+    if (hobbyPrev && hobbyNext) {
+        hobbyPrev.addEventListener('click', () => {
+            prevHobby();
+            resetHobbyTimer();
+        });
+
+        hobbyNext.addEventListener('click', () => {
+            nextHobby();
+            resetHobbyTimer();
+        });
+    }
+
+    if (hobbySlides.length > 0) {
+        showHobbySlide(hobbyCurrent);
+    }
+</script>
+
+<!-- Dark-Mode-Schalter -->
+<script>
+    const modeToggleBtn = document.getElementById('modeToggle');
+    const bodyElement = document.body;
+
+    const savedMode = localStorage.getItem('color-mode');
+    if (savedMode === 'dark') {
+        bodyElement.classList.add('dark-mode');
+        modeToggleBtn.textContent = 'Light Mode';
+    } else {
+        modeToggleBtn.textContent = 'Dark Mode';
+    }
+
+    modeToggleBtn.addEventListener('click', () => {
+        const isDark = bodyElement.classList.toggle('dark-mode');
+        modeToggleBtn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        localStorage.setItem('color-mode', isDark ? 'dark' : 'light');
+    });
+</script>
+
+<!-- Zurück nach oben Button -->
+<script>
+    const backToTopBtn = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+        backToTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>
